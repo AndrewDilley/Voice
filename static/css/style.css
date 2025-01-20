@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    margin: 10px 0;
+    width: 400px; /* Increase width by 3x */
+    height: 500px; /* Increase height by 5x */
+    resize: none; /* Optional: Prevent manual resizing */
+}
+
+input, button {
+    margin: 10px 0;
+    width: 100%;
+}
+
+button {
+    height: 40px;
+    cursor: pointer;
+}
