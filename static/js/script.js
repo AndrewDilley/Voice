@@ -16,11 +16,7 @@ document.getElementById("translate-btn").addEventListener("click", async () => {
 
     const data = await response.json();
 
-    if (data.file_content) {
-        // Display uploaded file content in the input text area
-        document.getElementById("input-text").value = data.file_content;
-    } else if (data.translated) {
-        // Display translated text in the output text area
+    if (data.translated) {
         document.getElementById("output-text").value = data.translated;
     } else {
         alert(data.error || "An error occurred.");
@@ -37,6 +33,7 @@ document.getElementById("copy-btn").addEventListener("click", async () => {
 
     try {
         await navigator.clipboard.writeText(outputText);
+        // Popup is now suppressed; no alert here.
     } catch (error) {
         console.error("Failed to copy text:", error);
         alert("Failed to copy text. Please copy manually.");

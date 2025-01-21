@@ -15,9 +15,9 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # Set OpenAI API key
 
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
-)
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 # Function to rewrite text using GPT-4o Mini
 
@@ -47,7 +47,7 @@ def rewrite_text(input_text):
     Input: "The project began on the 10th of March, 1996, and ended on 1996-03-15."
     Output: "The project began on 10 March 1996 and ended on 15 March 1996."
 
-        Ensure that all times are formatted as follows:
+     Ensure that all times are formatted as follows:
     - Use lowercase "am" or "pm."
     - Do not include a space between the number and "am" or "pm" (e.g., "4pm" instead of "4 pm").
     - For times on the hour, do not include ":00" (e.g., "4pm" instead of "4:00pm").
@@ -55,6 +55,9 @@ def rewrite_text(input_text):
     Example Rewrite:
     Input: "The meeting is scheduled for 4:00 PM and will end at 6:30 PM."
     Output: "The meeting is scheduled for 4pm and will end at 6:30pm."
+
+    Ensure numbers 0–9 are written as numerals (e.g., 3).
+    Write numbers 10 and above in words, except for measurements (e.g., length, money, temperature). For measurements, retain numerals (e.g., 12 km, $45 million, 25°C).
 
      Inclusive language principles:
     - Avoid gendered terms unless specifically required. Use gender-neutral alternatives (e.g., "they/them" instead of "he/she").
