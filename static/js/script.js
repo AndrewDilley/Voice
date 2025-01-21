@@ -1,25 +1,30 @@
 document.getElementById("translate-btn").addEventListener("click", async () => {
     const inputText = document.getElementById("input-text").value;
-    const fileInput = document.getElementById("file-upload").files[0];
 
-    let formData = new FormData();
-    if (fileInput) {
-        formData.append("file", fileInput);
-    } else {
-        formData.append("text", inputText);
+    if (!inputText.trim()) {
+        alert("Please enter some text to translate.");
+        return;
     }
 
-    const response = await fetch("/translate", {
-        method: "POST",
-        body: formData,
-    });
+    let formData = new FormData();
+    formData.append("text", inputText);
 
-    const data = await response.json();
+    try {
+        const response = await fetch("/translate", {
+            method: "POST",
+            body: formData,
+        });
 
-    if (data.translated) {
-        document.getElementById("output-text").value = data.translated;
-    } else {
-        alert(data.error || "An error occurred.");
+        const data = await response.json();
+
+        if (data.translated) {
+            document.getElementById("output-text").value = data.translated;
+        } else {
+            alert(data.error || "An error occurred.");
+        }
+    } catch (error) {
+        console.error("Error translating text:", error);
+        alert("Failed to communicate with the server.");
     }
 });
 
@@ -33,7 +38,7 @@ document.getElementById("copy-btn").addEventListener("click", async () => {
 
     try {
         await navigator.clipboard.writeText(outputText);
-        // Popup is now suppressed; no alert here.
+        alert("Text copied to clipboard!");
     } catch (error) {
         console.error("Failed to copy text:", error);
         alert("Failed to copy text. Please copy manually.");
