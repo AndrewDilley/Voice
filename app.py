@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from openai import OpenAI
 import docx
 from dotenv import load_dotenv
+import re
 
 # Load environment variables
 load_dotenv()
@@ -15,6 +16,24 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY")
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
 )
+
+# Function to redact PII from the text
+def redact_pii(text):
+    # Redact email addresses
+    text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "[REDACTED EMAIL]", text)
+    # Redact phone numbers
+    text = re.sub(r"\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{1,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{3,4}\b", "[REDACTED PHONE]", text)
+    # Redact credit card numbers
+    text = re.sub(r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b", "[REDACTED CREDIT CARD]", text)
+    # Redact addresses
+    address_pattern = r"\b\d+[/\d]*\s+\w+(\s\w+)*(\s(Street|Avenue|Road|Drive|Lane|Boulevard|Way))\b(.*\n){1,2}\b\w+(\s\w+)*,\s+\d{4}\b"
+    text = re.sub(address_pattern, "[REDACTED ADDRESS]", text, flags=re.IGNORECASE)
+    # Redact names (add known names as needed)
+    names = ["John Doe", "Jane Smith"]
+    for name in names:
+        text = text.replace(name, "[REDACTED NAME]")
+    return text
+
 
 # Function to rewrite text using GPT-4o Mini
 def rewrite_text(input_text):
@@ -119,8 +138,10 @@ def translate():
     try:
         text = request.form.get('text')
         if text:
-            translated_text = rewrite_text(text)
-            return jsonify({"translated": translated_text})
+        # Redact PII before sending to the LLM
+         redacted_text = redact_pii(text)
+         translated_text = rewrite_text(redacted_text)
+        return jsonify({"translated": translated_text})
         return jsonify({"error": "No text provided"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500

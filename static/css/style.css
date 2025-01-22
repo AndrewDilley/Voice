@@ -16,17 +16,14 @@ body {
 
 textarea {
     margin: 10px 0;
-    width: 400px; /* Increase width by 3x */
-    height: 500px; /* Increase height by 5x */
-    resize: none; /* Optional: Prevent manual resizing */
-}
-
-input, button {
-    margin: 10px 0;
-    width: 100%;
+    width: 400px; /* Adjust the width */
+    height: 500px; /* Adjust the height */
+    resize: none; /* Prevent manual resizing */
 }
 
 button {
+    margin: 10px 0;
+    width: 100%;
     height: 40px;
     cursor: pointer;
 }
