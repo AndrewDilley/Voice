@@ -15,3 +15,5 @@ venv/
 # Exclude Dockerfiles
 Dockerfile
 Dockerfile.*
+
+*.tar
