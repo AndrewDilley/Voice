@@ -19,15 +19,28 @@ client = OpenAI(
 
 # Function to redact PII from the text
 def redact_pii(text):
+    import re
     # Redact email addresses
     text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "[REDACTED EMAIL]", text)
     # Redact phone numbers
     text = re.sub(r"\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{1,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{3,4}\b", "[REDACTED PHONE]", text)
     # Redact credit card numbers
     text = re.sub(r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b", "[REDACTED CREDIT CARD]", text)
+ 
+    
     # Redact addresses
-    address_pattern = r"\b\d+[/\d]*\s+\w+(\s\w+)*(\s(Street|Avenue|Road|Drive|Lane|Boulevard|Way))\b(.*\n){1,2}\b\w+(\s\w+)*,\s+\d{4}\b"
+    street_types = r"(St|Street|Dv|Dve|Drive|Lane|Ln|Road|Rd|Court|Ct|Crescent|Cr|Cres|Highway|HWY|Hwy|Ave|Avenue|Boulevard|Way)"
+   
+    # Define state and territory names
+    state_types = r"(ACT|Australian Capital Territory|NSW|New South Wales|NT|Northern Territory|QLD|Queensland|SA|South Australia|TAS|Tasmania|VIC|Victoria|WA|Western Australia)"
+    
+    address_pattern = fr"\b(?:\d+/)?\d+[a-zA-Z]?\s+\w+(?:\s\w+)*\s{street_types}(?:,?\s\w+(?:\s\w+)*)?(?:,?\s\d{{4}})?(?:,?\s{state_types})?(?:,?\s\d{{4}})?\b"
     text = re.sub(address_pattern, "[REDACTED ADDRESS]", text, flags=re.IGNORECASE)
+
+    name_pattern = r"\b([A-Z][a-z]+(?:\s[A-Z][a-z]+)*|[A-Z](?:\.|[a-z]+)?(?:\s[A-Z](?:\.|[a-z]+)?)*\s[A-Z][a-z]+)\b"
+    text = re.sub(name_pattern, "[REDACTED NAME]", text)
+
+
     # Redact names (add known names as needed)
     names = ["John Doe", "Jane Smith"]
     for name in names:
