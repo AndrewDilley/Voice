@@ -42,7 +42,7 @@ def redact_pii(text):
 
 
     # Redact names (add known names as needed)
-    names = ["John Doe", "Jane Smith"]
+    names = ["Wannon Water", "WW", "Wannon Region Water Corporation"]
     for name in names:
         text = text.replace(name, "[REDACTED NAME]")
     return text
