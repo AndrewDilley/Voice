@@ -223,6 +223,7 @@ def translate():
             redacted_text = redact_pii(text)  # Step 1: Redact PII
             glossary_applied_text = apply_glossary(redacted_text)  # Step 2: Replace glossary words
             final_translation = rewrite_text(glossary_applied_text)  # Step 3: GPT refinement
+           # final_translation = apply_glossary(final_translation)  # Step 4: Final glossary check
             return jsonify({"translated": final_translation})
         return jsonify({"error": "No text provided"}), 400
     except Exception as e:
